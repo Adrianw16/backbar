@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16               # pinned. see the note below.
+    container_name: backbar-db
+    environment:
+      POSTGRES_DB: backbar           # creates the db on first start only
+      POSTGRES_USER: backbar
+      POSTGRES_PASSWORD: backbar
+    ports:
+      - "5433:5432"                  # host:container — 5433 dodges a local install
+    volumes:
+      - backbar_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U backbar -d backbar"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  backbar_pgdata:
